@@ -1,4 +1,5 @@
-import Link from "next/link";
+import Head from "next/head";
+import Heading from "../../components/Heading";
 import Videos from "../../components/Videos";
 import { getUser, getVideos } from "../../lib/data";
 import prisma from "../../lib/prisma";
@@ -9,13 +10,12 @@ export default function Channel({ user, videos }) {
 
   return (
     <>
-      <header className="flex h-14 px-5 pt-5 pb-2">
-        <Link href="/">
-          <a className="underline">Home</a>
-        </Link>
-
-        <div className="grow"></div>
-      </header>
+      <Head>
+        <title>{user.name}</title>
+        <meta name="description" content={user.name} />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <Heading />
       <div>
         <div className="flex justify-between">
           <div className="m-5 flex">

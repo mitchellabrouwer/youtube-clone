@@ -1,7 +1,9 @@
 import dynamic from "next/dynamic";
+import Head from "next/head";
 
 import Link from "next/link";
 import { Key } from "react";
+import Heading from "../../components/Heading";
 import Video from "../../components/Video";
 import { getVideo, getVideos } from "../../lib/data";
 import prisma from "../../lib/prisma";
@@ -14,13 +16,12 @@ export default function SingleVideo({ video, videos }) {
 
   return (
     <>
-      <header className="flex h-14 px-5 pt-5 pb-2">
-        <Link href="/">
-          <a className="underline">Home</a>
-        </Link>
-
-        <div className="grow"></div>
-      </header>
+      <Head>
+        <title>{video.title}</title>
+        <meta name="description" content={video.title} />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <Heading />
 
       <div className="flex h-screen">
         <div className="border-3 mb-4 flex w-full flex-col border-t border-r border-b border-black bg-black pl-0 md:w-2/3">
