@@ -5,8 +5,20 @@ export const getVideos = async (options, prisma) => {
     include: { author: true },
   };
 
+  if (options.author) {
+    data.where = {
+      author: {
+        id: options.author,
+      },
+    };
+  }
+
   if (options.take) {
     data.take = options.take;
+  }
+
+  if (options.skip) {
+    data.skip = options.skip;
   }
 
   const videos = await prisma.video.findMany(data);
@@ -21,4 +33,12 @@ export const getVideo = async (id, prisma) => {
   });
 
   return video;
+};
+
+export const getUser = async (username, prisma) => {
+  const user = await prisma.user.findUnique({
+    where: { username },
+  });
+
+  return user;
 };
