@@ -1,10 +1,16 @@
 import Head from "next/head";
+import { useState } from "react";
 import Heading from "../components/Heading";
+import LoadMore from "../components/LoadMore";
 import Videos from "../components/Videos";
+import { amount } from "../lib/config";
 import { getVideos } from "../lib/data";
 import prisma from "../lib/prisma";
 
-export default function Home({ videos }) {
+export default function Home({ initialVideos }) {
+  const [videos, setVideos] = useState(initialVideos);
+  const [reachedEnd, setReachedEnd] = useState(initialVideos.length < amount);
+
   return (
     <div>
       <Head>
@@ -23,6 +29,14 @@ export default function Home({ videos }) {
         <p className="mt-20 flex justify-center">No videos found</p>
       )}
       <Videos videos={videos} />
+      {!reachedEnd && (
+        <LoadMore
+          videos={videos}
+          setVideos={setVideos}
+          setReachedEnd={setReachedEnd}
+          author={undefined}
+        />
+      )}
     </div>
   );
 }
@@ -31,5 +45,5 @@ export async function getServerSideProps() {
   let videos = await getVideos({}, prisma);
   videos = JSON.parse(JSON.stringify(videos));
 
-  return { props: { videos } };
+  return { props: { initialVideos: videos } };
 }

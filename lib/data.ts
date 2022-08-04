@@ -1,3 +1,5 @@
+import { amount } from "./config";
+
 export const getVideos = async (options, prisma) => {
   const data: { [key: string]: any } = {
     where: {},
@@ -13,9 +15,7 @@ export const getVideos = async (options, prisma) => {
     };
   }
 
-  if (options.take) {
-    data.take = options.take;
-  }
+  data.take = options.take || amount;
 
   if (options.skip) {
     data.skip = options.skip;
