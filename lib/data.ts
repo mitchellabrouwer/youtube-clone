@@ -42,3 +42,11 @@ export const getUser = async (username, prisma) => {
 
   return user;
 };
+
+export const getSubscribersCount = async (username, prisma) => {
+  const user = await prisma.user.findUnique({
+    where: { username },
+    include: { subscribers: true },
+  });
+  return user.subscribers.length;
+};

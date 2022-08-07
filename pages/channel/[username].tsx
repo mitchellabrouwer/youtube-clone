@@ -1,16 +1,25 @@
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useState } from "react";
 import Heading from "../../components/Heading";
 import LoadMore from "../../components/LoadMore";
+import SubscribedButton from "../../components/SubscribedButton";
 import Videos from "../../components/Videos";
 import { amount } from "../../lib/config";
-import { getUser, getVideos } from "../../lib/data";
+import { getSubscribersCount, getUser, getVideos } from "../../lib/data";
 import prisma from "../../lib/prisma";
 
-export default function Channel({ user, initialVideos }) {
+export default function Channel({ user, initialVideos, subscribers }) {
   const [videos, setVideos] = useState(initialVideos);
   const [reachedEnd, setReachedEnd] = useState(initialVideos.length < amount);
 
+  const { data: session, status } = useSession();
+
+  const loading = status === "loading";
+
+  if (loading) {
+    return null;
+  }
   if (!user)
     return <p className="p-5 text-center">Channel does not exist 😞</p>;
 
@@ -33,8 +42,16 @@ export default function Channel({ user, initialVideos }) {
               />
             )}
             <div className="mt-5">
-              <p className="text-lg font-bold text-white">{user.name}</p>
+              <p className="text-lg font-bold">{user.name}</p>
+              <div className="text-gray-400">{subscribers} subscribers</div>
             </div>
+          </div>
+          <div className="mt-12 mr-5">
+            {session && user.id === session.user.id ? (
+              <div></div>
+            ) : (
+              <SubscribedButton user={user} />
+            )}
           </div>
         </div>
         <div>
@@ -61,10 +78,16 @@ export async function getServerSideProps(context) {
   let videos = await getVideos({ author: user.id }, prisma);
   videos = JSON.parse(JSON.stringify(videos));
 
+  const subscribers = await getSubscribersCount(
+    context.params.username,
+    prisma
+  );
+
   return {
     props: {
       initialVideos: videos,
       user,
+      subscribers,
     },
   };
 }

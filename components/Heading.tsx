@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable jsx-a11y/anchor-has-content */
 import { useSession } from "next-auth/react";
@@ -28,6 +30,18 @@ export default function Heading() {
       </div>
 
       <div className="ml-10 mt-1 grow"></div>
+
+      {session && (
+        <Link href={`/channel/${session.user.username}`}>
+          <a className="flex">
+            <img
+              src={session.user.image}
+              className="mr-2 mb-2 mt-1 h-8 rounded-full"
+            />
+            <p className="mr-3">{session.user.name}</p>
+          </a>
+        </Link>
+      )}
 
       <a
         className="flex-l rounded-full border px-4 font-bold"
