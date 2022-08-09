@@ -1,4 +1,4 @@
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
 import { useState } from "react";
 import Heading from "../../components/Heading";
@@ -6,10 +6,20 @@ import LoadMore from "../../components/LoadMore";
 import SubscribedButton from "../../components/SubscribedButton";
 import Videos from "../../components/Videos";
 import { amount } from "../../lib/config";
-import { getSubscribersCount, getUser, getVideos } from "../../lib/data";
+import {
+  getSubscribersCount,
+  getUser,
+  getVideos,
+  isSubscribed,
+} from "../../lib/data";
 import prisma from "../../lib/prisma";
 
-export default function Channel({ user, initialVideos, subscribers }) {
+export default function Channel({
+  user,
+  initialVideos,
+  subscribers,
+  subscribed,
+}) {
   const [videos, setVideos] = useState(initialVideos);
   const [reachedEnd, setReachedEnd] = useState(initialVideos.length < amount);
 
@@ -50,7 +60,7 @@ export default function Channel({ user, initialVideos, subscribers }) {
             {session && user.id === session.user.id ? (
               <div></div>
             ) : (
-              <SubscribedButton user={user} />
+              <SubscribedButton user={user} subscribed={subscribed} />
             )}
           </div>
         </div>
@@ -72,8 +82,15 @@ export default function Channel({ user, initialVideos, subscribers }) {
 }
 
 export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
   let user = await getUser(context.params.username, prisma);
   user = JSON.parse(JSON.stringify(user));
+
+  let subscribed = null;
+  if (session) {
+    subscribed = await isSubscribed(session.user.username, user.id, prisma);
+  }
 
   let videos = await getVideos({ author: user.id }, prisma);
   videos = JSON.parse(JSON.stringify(videos));
@@ -88,6 +105,7 @@ export async function getServerSideProps(context) {
       initialVideos: videos,
       user,
       subscribers,
+      subscribed,
     },
   };
 }

@@ -11,8 +11,13 @@ export default async function handler(req, res) {
     const take = parseInt(req.query.take || amount, 10);
     const skip = parseInt(req.query.skip || 0, 10);
     const author = req.author?.query;
+    const { subscriptions } = req.query;
 
-    const videos = await getVideos({ take, skip, author }, prisma);
+    const videos = await getVideos(
+      { take, skip, author, subscriptions },
+      prisma
+    );
+
     return res.json(videos);
   }
 
