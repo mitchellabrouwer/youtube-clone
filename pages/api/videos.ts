@@ -10,8 +10,10 @@ export default async function handler(req, res) {
   if (req.method === "GET") {
     const take = parseInt(req.query.take || amount, 10);
     const skip = parseInt(req.query.skip || 0, 10);
-    const author = req.author?.query;
+    const { author } = req.query;
     const { subscriptions } = req.query;
+
+    console.log("subscriptions", subscriptions);
 
     const videos = await getVideos(
       { take, skip, author, subscriptions },

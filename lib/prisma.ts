@@ -1,3 +1,4 @@
+/* eslint-disable import/no-mutable-exports */
 import { PrismaClient } from "@prisma/client";
 
 let prisma: PrismaClient;
@@ -7,6 +8,7 @@ if (process.env.NODE_ENV === "production") {
 } else {
   if (!global.prisma) {
     global.prisma = new PrismaClient();
+    // {      log: ["query", "info", "warn", "error"],    }
   }
 
   prisma = global.prisma;
