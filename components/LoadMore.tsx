@@ -7,6 +7,7 @@ export default function LoadMore({
   author,
   subscriptions,
 }) {
+  console.log(subscriptions);
   return (
     <div className="flex justify-center">
       <button
@@ -20,7 +21,7 @@ export default function LoadMore({
           }
 
           if (subscriptions) {
-            url += ` && subscriptions=${subscriptions}`;
+            url += `&subscriptions=${subscriptions}`;
           }
           const res = await fetch(url);
           const data = await res.json();
