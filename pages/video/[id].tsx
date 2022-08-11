@@ -46,6 +46,7 @@ export default function SingleVideo({ video, videos }) {
               width="100%"
               height="100%"
               controls
+              playing
               // light={video.thumbnail}
             />
           </div>
