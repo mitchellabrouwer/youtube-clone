@@ -1,5 +1,6 @@
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
+import Link from "next/link";
 import { useState } from "react";
 import Heading from "../../components/Heading";
 import LoadMore from "../../components/LoadMore";
@@ -57,9 +58,14 @@ export default function Channel({
             </div>
           </div>
           <div className="mt-12 mr-5">
-            {session && user.id === session.user.id ? (
-              <div></div>
-            ) : (
+            {session && user.id === session.user.id && (
+              <Link href="/upload">
+                <a className="rounded-md bg-green-500 px-3 py-2">
+                  Upload new video
+                </a>
+              </Link>
+            )}
+            {session && (
               <SubscribedButton user={user} subscribed={subscribed} />
             )}
           </div>
