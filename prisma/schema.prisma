@@ -25,6 +25,7 @@ model User {
 
   subscribers  User[] @relation("Subscribers")
   subscribedTo User[] @relation("Subscribers")
+  Vote         Vote[]
 }
 
 model VerificationToken {
@@ -76,4 +77,16 @@ model Video {
   length     Int      @default(0)
   visibility String
   createdAt  DateTime @default(now())
+  votes      Vote[]
+}
+
+model Vote {
+  id       Int     @id @default(autoincrement())
+  up       Boolean
+  author   User    @relation(fields: [authorId], references: [id])
+  authorId String
+  video    Video   @relation(fields: [videoId], references: [id])
+  videoId  String
+
+  @@unique([authorId, videoId])
 }
