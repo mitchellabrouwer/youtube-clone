@@ -22,15 +22,10 @@ export default function Home({ initialVideos }) {
     return null;
   }
 
-  console.log("image", !session.user.image);
-  console.log("name", !session.user.name);
-  console.log("session", session);
-
-  if (session && (!session.user.name || !session.user.image)) {
+  if (session && (!session?.user?.name || !session?.user?.image)) {
     router.push("/setup");
   }
-  // console.log("videos", videos);
-  console.log("reachedEnd", reachedEnd);
+
   return (
     <ErrorBoundary>
       <div>
