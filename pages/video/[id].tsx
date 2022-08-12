@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Key, useEffect } from "react";
 import Heading from "../../components/Heading";
 import Video from "../../components/Video";
+import Vote from "../../components/Vote";
 import { getVideo, getVideos } from "../../lib/data";
 import prisma from "../../lib/prisma";
 import timeago from "../../lib/timeago";
@@ -46,21 +47,22 @@ export default function SingleVideo({ video, videos }) {
               width="100%"
               height="100%"
               controls
-              playing
+              // playing
               // light={video.thumbnail}
             />
           </div>
 
           <div className="mt-5 px-5">
-            <div className="flex ">
+            <p className="text-2xl font-bold ">{video.title}</p>
+            <div className="flex justify-between">
               <div>
-                <p className="text-2xl font-bold ">{video.title}</p>
-
-                <div className="text-gray-400">
+                <div className="py-2 text-gray-400">
                   {video.views + 1} views ·{" "}
                   {timeago.format(new Date(video.createdAt))}
                 </div>
               </div>
+
+              <Vote video={video} vote={false} downvotes={20} upvotes={5} />
             </div>
 
             <div className="mt-5 flex justify-between border-t border-gray-500 pt-5">

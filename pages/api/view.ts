@@ -5,6 +5,10 @@ export default async function handler(req, res) {
     return res.status(501).end();
   }
 
+  if (!req.body.video) {
+    return res.end();
+  }
+
   await prisma.video.update({
     where: { id: req.body.video },
     data: { views: { increment: 1 } },
