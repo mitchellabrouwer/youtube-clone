@@ -62,7 +62,7 @@ export default function SingleVideo({ video, videos }) {
                 </div>
               </div>
 
-              <Vote video={video} vote={false} downvotes={20} upvotes={5} />
+              <Vote videoId={video.id} />
             </div>
 
             <div className="mt-5 flex justify-between border-t border-gray-500 pt-5">

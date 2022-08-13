@@ -1,17 +1,29 @@
-import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiThumbsDown, FiThumbsUp } from "react-icons/fi";
 
-export default function Vote({ video, vote, downvotes, upvotes }) {
+export default function Vote({ videoId }) {
   // api to create
 
-  const router = useRouter();
-  const [isLiked, setIsLiked] = useState(vote);
+  const [isLiked, setIsLiked] = useState(null);
+
+  const [upvotes, setUpvotes] = useState();
+  const [downvotes, setDownvotes] = useState();
+
+  useEffect(() => {
+    const fetchVotes = async () => {
+      const json = await fetch(`/api/vote?video=${videoId}`);
+      const data = await json.json();
+      setIsLiked(data.vote);
+      setUpvotes(data.upvotes);
+      setDownvotes(data.downvotes);
+    };
+    fetchVotes().catch((error) => console.log(error));
+  }, [isLiked, videoId]);
 
   async function voteHandler(upvote) {
     await fetch("/api/vote", {
       body: JSON.stringify({
-        video,
+        video: videoId,
         up: upvote,
       }),
       headers: {
@@ -20,8 +32,6 @@ export default function Vote({ video, vote, downvotes, upvotes }) {
       method: "POST",
     });
     setIsLiked(upvote);
-
-    router.reload();
   }
 
   return (

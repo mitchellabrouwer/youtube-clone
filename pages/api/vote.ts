@@ -18,6 +18,31 @@ export default async function handler(req, res) {
 
   if (!user) return res.status(401).json({ message: "User not found" });
 
+  if (req.method === "GET") {
+    const vote = await prisma.vote.findUnique({
+      where: {
+        authorId_videoId: {
+          authorId: user.id,
+          videoId: req.query.video,
+        },
+      },
+    });
+
+    const downvotes = await prisma.vote.count({
+      where: { up: false },
+    });
+
+    const upvotes = await prisma.vote.count({
+      where: { up: true },
+    });
+
+    return res.json({
+      vote: vote.up,
+      downvotes,
+      upvotes,
+    });
+  }
+
   if (req.method === "POST") {
     const vote = await prisma.vote.upsert({
       where: {
