@@ -7,26 +7,29 @@ export default async function handler(req, res) {
   }
 
   const session = await getSession({ req });
+  let user;
 
-  if (!session) return res.status(401).json({ message: "Not logged in" });
-
-  const user = await prisma.user.findUnique({
-    where: {
-      id: session.user.id,
-    },
-  });
-
-  if (!user) return res.status(401).json({ message: "User not found" });
-
-  if (req.method === "GET") {
-    const vote = await prisma.vote.findUnique({
+  if (session) {
+    user = await prisma.user.findUnique({
       where: {
-        authorId_videoId: {
-          authorId: user.id,
-          videoId: req.query.video,
-        },
+        id: session.user.id,
       },
     });
+  }
+
+  if (req.method === "GET") {
+    let vote;
+
+    if (user?.id) {
+      vote = await prisma.vote.findUnique({
+        where: {
+          authorId_videoId: {
+            authorId: user.id,
+            videoId: req.query.video,
+          },
+        },
+      });
+    }
 
     const downvotes = await prisma.vote.count({
       where: { up: false },
@@ -37,13 +40,15 @@ export default async function handler(req, res) {
     });
 
     return res.json({
-      vote: vote.up,
+      vote: vote || null,
       downvotes,
       upvotes,
     });
   }
 
   if (req.method === "POST") {
+    if (!session) return res.status(401).json({ message: "Not logged in" });
+
     const vote = await prisma.vote.upsert({
       where: {
         authorId_videoId: {

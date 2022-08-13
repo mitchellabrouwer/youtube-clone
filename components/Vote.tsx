@@ -2,18 +2,15 @@ import { useEffect, useState } from "react";
 import { FiThumbsDown, FiThumbsUp } from "react-icons/fi";
 
 export default function Vote({ videoId }) {
-  // api to create
-
   const [isLiked, setIsLiked] = useState(null);
-
   const [upvotes, setUpvotes] = useState();
   const [downvotes, setDownvotes] = useState();
 
   useEffect(() => {
     const fetchVotes = async () => {
-      const json = await fetch(`/api/vote?video=${videoId}`);
-      const data = await json.json();
-      setIsLiked(data.vote);
+      const raw = await fetch(`/api/vote?video=${videoId}`);
+      const data = await raw.json();
+      setIsLiked(data.vote.up);
       setUpvotes(data.upvotes);
       setDownvotes(data.downvotes);
     };
@@ -21,17 +18,18 @@ export default function Vote({ videoId }) {
   }, [isLiked, videoId]);
 
   async function voteHandler(upvote) {
+    setIsLiked(upvote);
     await fetch("/api/vote", {
       body: JSON.stringify({
         video: videoId,
         up: upvote,
       }),
+
       headers: {
         "Content-Type": "application/json",
       },
       method: "POST",
     });
-    setIsLiked(upvote);
   }
 
   return (
@@ -50,7 +48,7 @@ export default function Vote({ videoId }) {
         type="button"
         onClick={() => voteHandler(false)}
       >
-        <FiThumbsDown fill={!isLiked ? "#FFF" : "#000"} />
+        <FiThumbsDown fill={isLiked === false ? "#000" : "#FFF"} />
         <span className="p-1">{downvotes}</span>
       </button>
     </div>
