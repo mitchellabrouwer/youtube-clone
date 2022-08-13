@@ -21,7 +21,7 @@ export default function Setup() {
   console.log("session.user.name", !session.user.name);
   console.log("session.user.image", !session.user.image);
 
-  if (!loading && session.user.name && session.user.image) {
+  if (!loading && session.user.name) {
     router.push("/");
   }
 
@@ -43,6 +43,7 @@ export default function Setup() {
 
         session.user.name = name;
         session.user.username = username;
+
         router.push("/");
       }}
     >
