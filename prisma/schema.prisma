@@ -21,11 +21,13 @@ model User {
   updatedAt     DateTime  @updatedAt
   accounts      Account[]
   sessions      Session[]
-  videos        Video[]
+
+  videos Video[]
+  seen   Seen[]
 
   subscribers  User[] @relation("Subscribers")
   subscribedTo User[] @relation("Subscribers")
-  Vote         Vote[]
+  votes        Vote[]
 }
 
 model VerificationToken {
@@ -78,15 +80,26 @@ model Video {
   visibility String
   createdAt  DateTime @default(now())
   votes      Vote[]
+  seen       Seen[]
 }
 
 model Vote {
   id       Int     @id @default(autoincrement())
   up       Boolean
-  author   User    @relation(fields: [authorId], references: [id])
+  author   User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
-  video    Video   @relation(fields: [videoId], references: [id])
+  video    Video   @relation(fields: [videoId], references: [id], onDelete: Cascade)
   videoId  String
 
   @@unique([authorId, videoId])
+}
+
+model Seen {
+  id      Int    @id @default(autoincrement())
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  String
+  video   Video  @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  videoId String
+
+  @@unique([userId, videoId])
 }
