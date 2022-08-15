@@ -48,7 +48,7 @@ export default function Vote({ videoId }) {
         type="button"
         onClick={() => voteHandler(false)}
       >
-        <FiThumbsDown fill={isLiked === false ? "#000" : "#FFF"} />
+        <FiThumbsDown fill={isLiked === false ? "#FFF" : "#000"} />
         <span className="p-1">{downvotes}</span>
       </button>
     </div>
