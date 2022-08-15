@@ -58,14 +58,14 @@ export default function Channel({
             </div>
           </div>
           <div className="mt-12 mr-5">
-            {session && user.id === session.user.id && (
+            {session && user.id === session?.user?.id && (
               <Link href="/upload">
                 <a className="rounded-md bg-green-500 px-3 py-2">
                   Upload new video
                 </a>
               </Link>
             )}
-            {session && (
+            {session && user.id !== session?.user?.id && (
               <SubscribedButton user={user} subscribed={subscribed} />
             )}
           </div>
