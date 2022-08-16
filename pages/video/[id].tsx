@@ -82,7 +82,7 @@ export default function SingleVideo({ video, videos }) {
           </div>
         </div>
 
-        <div className="hidden md:block md:w-1/3">
+        <div className="mt-3 hidden md:block md:w-1/3">
           <div className="flex flex-wrap">
             {/* eslint-disable-next-line no-shadow */}
             {videos.map((video: any, index: Key) => (
@@ -102,7 +102,7 @@ export async function getServerSideProps(context) {
   let video = await getVideo(context.params.id, prisma);
   video = JSON.parse(JSON.stringify(video));
 
-  let videos = await getVideos({ take: 3 }, prisma);
+  let videos = await getVideos({ take: 3, author: video.authorId }, prisma);
   videos = JSON.parse(JSON.stringify(videos));
 
   return {

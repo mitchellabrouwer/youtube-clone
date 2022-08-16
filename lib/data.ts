@@ -7,6 +7,8 @@ export const getVideos = async (options, prisma) => {
     include: { author: true },
   };
 
+  console.log("options.author", options.author);
+
   if (options.author) {
     data.where = {
       author: {
