@@ -18,8 +18,6 @@ export default function Setup() {
 
   if (!session || !session.user) return null;
   if (loading) return null;
-  console.log("session.user.name", !session.user.name);
-  console.log("session.user.image", !session.user.image);
 
   if (!loading && session.user.name) {
     router.push("/");

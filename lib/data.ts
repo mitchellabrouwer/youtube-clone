@@ -31,11 +31,8 @@ export const getVideos = async (options, prisma) => {
     };
   }
 
-  // console.log("data.ts data.where", data.where);
-
   const videos = await prisma.video.findMany(data);
 
-  // console.log("data.ts videos", videos);
   return videos;
 };
 
@@ -62,8 +59,6 @@ export const getSubscribersCount = async (username, prisma) => {
     include: { subscribers: true },
   });
 
-  console.log(user);
-
   return user.subscribers.length;
 };
 
@@ -80,4 +75,31 @@ export const isSubscribed = async (username, isSubscribedTo, prisma) => {
   });
 
   return user.subscribedTo?.length !== 0;
+};
+
+export const getSubscribedTo = async (userId, prisma) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: {
+      subscribedTo: {
+        select: {
+          name: true,
+          username: true,
+        },
+      },
+    },
+  });
+
+  return user.subscribedTo.filter(
+    (video, index, array) =>
+      array.findIndex((obj) => obj.username === video.username) === index
+  );
+};
+
+export const getSeen = async (userId, prisma) => {
+  const videos = await prisma.seen.findMany({
+    where: { userId },
+  });
+
+  return videos.map((video) => video.videoId);
 };

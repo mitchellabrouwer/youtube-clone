@@ -12,10 +12,6 @@ export default async function handler(req, res) {
     user = await prisma.user.findUnique({ where: { id: session.user.id } });
   }
 
-  console.log("req.body.video", req.body.video);
-
-  console.log("user", user);
-
   if (req.method === "POST" && req.body.video) {
     await prisma.video.update({
       where: { id: req.body.video },

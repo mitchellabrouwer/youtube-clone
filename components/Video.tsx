@@ -2,7 +2,12 @@ import Image from "next/image";
 import Link from "next/link";
 import timeago from "../lib/timeago";
 
-export default function Video({ video }) {
+type VideoProps = {
+  video: any;
+  seen?: string[];
+};
+
+export default function Video({ video, seen }: VideoProps) {
   return (
     <div className="">
       <div className="px-5 pb-5">
@@ -10,7 +15,7 @@ export default function Video({ video }) {
           <Link href={`/video/${video.id}`}>
             <a>
               <Image
-                className="mb-2 cursor-pointer"
+                className={`mb-2 cursor-pointer ${seen ? "brightness-50" : ""}`}
                 src={video.thumbnail}
                 width="800"
                 height="450"
@@ -24,6 +29,11 @@ export default function Video({ video }) {
             .padStart(2, "0")}
           :{(video.length % 60).toString().padStart(2, "0")}
         </p>
+        {seen && (
+          <p className="relative float-left -mt-11 ml-1 bg-black p-1 italic text-white">
+            viewed
+          </p>
+        )}
         <div className="flex">
           {video.author.image && (
             // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element

@@ -22,12 +22,12 @@ export default function SingleVideo({ video, videos }) {
     const incrementalViews = async () => {
       await fetch("/api/view", {
         body: JSON.stringify({ video: video.id }),
-        headers: { "Content-Tyoe": "application/json" },
+        headers: { "Content-Type": "application/json" },
         method: "POST",
       });
     };
     incrementalViews();
-  }, []);
+  }, [video.id]);
 
   return (
     <>

@@ -13,8 +13,6 @@ export default async function handler(req, res) {
     const { author } = req.query;
     const { subscriptions } = req.query;
 
-    console.log("subscriptions", subscriptions);
-
     const videos = await getVideos(
       { take, skip, author, subscriptions },
       prisma

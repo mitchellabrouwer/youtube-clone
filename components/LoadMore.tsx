@@ -7,7 +7,6 @@ export default function LoadMore({
   author,
   subscriptions,
 }) {
-  console.log(subscriptions);
   return (
     <div className="flex justify-center">
       <button

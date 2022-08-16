@@ -30,9 +30,6 @@ handler.post(async (req: Request, res: NextApiResponse) => {
     },
   });
 
-  console.log("req.files.image[]0", req.files.image[0]);
-  console.log("user id", user.id);
-
   if (req.files && req.files.image[0]) {
     const avatarUrl = await upload({
       file: req.files.image[0],
