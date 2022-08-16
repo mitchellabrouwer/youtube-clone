@@ -65,6 +65,5 @@ export async function getServerSideProps(context) {
   videos = JSON.parse(JSON.stringify(videos));
 
   const watched = await getSeen(session.user.id, prisma);
-  console.log(watched);
   return { props: { initialVideos: videos, watched } };
 }
