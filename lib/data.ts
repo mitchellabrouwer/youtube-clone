@@ -97,11 +97,15 @@ export const getSubscribedTo = async (userId, prisma) => {
 };
 
 export const getSeen = async (userId, prisma) => {
-  const videos = await prisma.seen.findMany({
-    where: { userId },
-  });
+  if (userId) {
+    const videos = await prisma.seen.findMany({
+      where: { userId },
+    });
 
-  return videos.map((video) => video.videoId);
+    return videos.map((video) => video.videoId);
+  }
+
+  return [];
 };
 
 export const getComments = async (videoId, prisma) => {
