@@ -4,16 +4,18 @@ import Head from "next/head";
 
 import Link from "next/link";
 import { Key, useEffect } from "react";
+import Comments from "../../components/Comments";
+
 import Heading from "../../components/Heading";
 import Video from "../../components/Video";
 import Vote from "../../components/Vote";
-import { getVideo, getVideos } from "../../lib/data";
+import { getComments, getVideo, getVideos } from "../../lib/data";
 import prisma from "../../lib/prisma";
 import timeago from "../../lib/timeago";
 
 const ReactPlayer = dynamic(() => import("react-player/lazy"), { ssr: false });
 
-export default function SingleVideo({ video, videos }) {
+export default function SingleVideo({ video, videos, comments }) {
   if (!video) {
     return <p className="p-5 text-center">Video does not exist 😞</p>;
   }
@@ -79,6 +81,8 @@ export default function SingleVideo({ video, videos }) {
                 </a>
               </Link>
             </div>
+
+            <Comments video={video.id} comments={comments} />
           </div>
         </div>
 
@@ -105,10 +109,15 @@ export async function getServerSideProps(context) {
   let videos = await getVideos({ take: 3, author: video.authorId }, prisma);
   videos = JSON.parse(JSON.stringify(videos));
 
+  let comments = await getComments(video.id, prisma);
+  comments = JSON.parse(JSON.stringify(comments));
+
+  console.log("comments", comments);
   return {
     props: {
       video,
       videos,
+      comments,
     },
   };
 }

@@ -25,9 +25,10 @@ model User {
   videos Video[]
   seen   Seen[]
 
-  subscribers  User[] @relation("Subscribers")
-  subscribedTo User[] @relation("Subscribers")
+  subscribers  User[]    @relation("Subscribers")
+  subscribedTo User[]    @relation("Subscribers")
   votes        Vote[]
+  comments     Comment[]
 }
 
 model VerificationToken {
@@ -75,12 +76,23 @@ model Video {
   authorId String
 
   thumbnail  String
-  views      Int      @default(0)
-  length     Int      @default(0)
+  views      Int       @default(0)
+  length     Int       @default(0)
   visibility String
-  createdAt  DateTime @default(now())
+  createdAt  DateTime  @default(now())
   votes      Vote[]
   seen       Seen[]
+  comments   Comment[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  video     Video    @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  videoId   String
 }
 
 model Vote {

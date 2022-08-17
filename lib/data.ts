@@ -7,8 +7,6 @@ export const getVideos = async (options, prisma) => {
     include: { author: true },
   };
 
-  console.log("options.author", options.author);
-
   if (options.author) {
     data.where = {
       author: {
@@ -104,4 +102,16 @@ export const getSeen = async (userId, prisma) => {
   });
 
   return videos.map((video) => video.videoId);
+};
+
+export const getComments = async (videoId, prisma) => {
+  const comments = await prisma.comment.findMany({
+    where: {
+      videoId,
+    },
+    include: {
+      author: true,
+    },
+  });
+  return comments;
 };

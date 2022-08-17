@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { faker } from "@faker-js/faker";
 import prisma from "../../lib/prisma";
@@ -37,10 +38,15 @@ export default async function handler(req, res) {
       return users[randomIndex];
     };
 
+    const videos = await prisma.video.findMany();
+    const getRandomVideoId = () => {
+      const randomIndex = Math.floor(Math.random() * videos.length);
+      return videos[randomIndex].id;
+    };
+
     let videosCount = 0;
 
     while (videosCount < 20) {
-      // eslint-disable-next-line no-await-in-loop
       await prisma.video.create({
         data: {
           title: faker.lorem.words(),
@@ -52,6 +58,20 @@ export default async function handler(req, res) {
         },
       });
       videosCount += 1;
+
+      let commentsCount = 0;
+
+      while (commentsCount < 20) {
+        await prisma.comment.create({
+          data: {
+            content: faker.lorem.words(),
+            author: { connect: { id: getRandomUser().id } },
+            video: { connect: { id: getRandomVideoId() } },
+          },
+        });
+
+        commentsCount += 1;
+      }
     }
   }
   if (req.body.task === "clean_database") {

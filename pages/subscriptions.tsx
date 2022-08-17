@@ -76,7 +76,5 @@ export async function getServerSideProps(context) {
   let subscribedTo = await getSubscribedTo(session.user.id, prisma);
   subscribedTo = JSON.parse(JSON.stringify(subscribedTo));
 
-  console.log("subscribed to", subscribedTo);
-
   return { props: { initialVideos: videos, subscribedTo } };
 }
