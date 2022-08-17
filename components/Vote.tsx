@@ -1,7 +1,10 @@
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { FiThumbsDown, FiThumbsUp } from "react-icons/fi";
 
 export default function Vote({ videoId }) {
+  const { data: session } = useSession();
+
   const [isLiked, setIsLiked] = useState(null);
   const [upvotes, setUpvotes] = useState();
   const [downvotes, setDownvotes] = useState();
@@ -10,12 +13,13 @@ export default function Vote({ videoId }) {
     const fetchVotes = async () => {
       const raw = await fetch(`/api/vote?video=${videoId}`);
       const data = await raw.json();
-      setIsLiked(data.vote.up);
+
+      setIsLiked(data.vote);
       setUpvotes(data.upvotes);
       setDownvotes(data.downvotes);
     };
-    fetchVotes().catch((error) => console.log(error));
-  }, [isLiked, videoId]);
+    fetchVotes();
+  }, [videoId]);
 
   async function voteHandler(upvote) {
     setIsLiked(upvote);
@@ -38,6 +42,7 @@ export default function Vote({ videoId }) {
         className="flex items-center"
         type="button"
         onClick={() => voteHandler(true)}
+        disabled={!session?.user}
       >
         <FiThumbsUp fill={isLiked ? "#FFF" : "#000"} />
         <span className="p-1">{upvotes}</span>
@@ -47,6 +52,7 @@ export default function Vote({ videoId }) {
         className="flex items-center"
         type="button"
         onClick={() => voteHandler(false)}
+        disabled={!session?.user}
       >
         <FiThumbsDown fill={isLiked === false ? "#FFF" : "#000"} />
         <span className="p-1">{downvotes}</span>
