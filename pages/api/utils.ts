@@ -3,6 +3,20 @@
 import { faker } from "@faker-js/faker";
 import prisma from "../../lib/prisma";
 
+const getRandomVideoId = async () => {
+  const videos = await prisma.video.findMany();
+  const randomIndex = Math.floor(Math.random() * videos.length);
+  return videos[randomIndex].id;
+};
+
+const getRandomUserId = async () => {
+  const users = await prisma.user.findMany();
+  const randomIndex = Math.floor(Math.random() * users.length);
+  return users[randomIndex].id;
+};
+
+const getRandomBool = () => Math.random() < 0.5;
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.end();
@@ -32,18 +46,6 @@ export default async function handler(req, res) {
       "https://bootcamp-mitch.s3.ap-southeast-2.amazonaws.com/SampleVideo_1280x720_5mb.mp4";
     const thumbnailURL = "http://placeimg.com/800/450/animals";
 
-    const users = await prisma.user.findMany();
-    const getRandomUser = () => {
-      const randomIndex = Math.floor(Math.random() * users.length);
-      return users[randomIndex];
-    };
-
-    const videos = await prisma.video.findMany();
-    const getRandomVideoId = () => {
-      const randomIndex = Math.floor(Math.random() * videos.length);
-      return videos[randomIndex].id;
-    };
-
     let videosCount = 0;
 
     while (videosCount < 20) {
@@ -54,7 +56,7 @@ export default async function handler(req, res) {
           url: videoURL,
           length: faker.datatype.number(1000),
           visibility: "public",
-          author: { connect: { id: getRandomUser().id } },
+          author: { connect: { id: await getRandomUserId() } },
         },
       });
       videosCount += 1;
@@ -65,12 +67,35 @@ export default async function handler(req, res) {
         await prisma.comment.create({
           data: {
             content: faker.lorem.words(),
-            author: { connect: { id: getRandomUser().id } },
-            video: { connect: { id: getRandomVideoId() } },
+            author: { connect: { id: await getRandomUserId() } },
+            video: { connect: { id: await getRandomVideoId() } },
           },
         });
 
         commentsCount += 1;
+      }
+
+      let votesCount = 0;
+
+      while (votesCount < 100) {
+        const author = await getRandomUserId();
+        const video = await getRandomVideoId();
+        await prisma.vote.upsert({
+          where: {
+            authorId_videoId: {
+              authorId: author,
+              videoId: video,
+            },
+          },
+          update: { up: getRandomBool() },
+          create: {
+            up: getRandomBool(),
+            video: { connect: { id: video } },
+            author: { connect: { id: author } },
+          },
+        });
+
+        votesCount += 1;
       }
     }
   }
