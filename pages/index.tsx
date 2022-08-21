@@ -7,9 +7,8 @@ import Heading from "../components/Heading";
 import LoadMore from "../components/LoadMore";
 import Videos from "../components/Videos";
 import { amount } from "../lib/config";
-import { getSeen } from "../lib/data";
+import { getBestVideos, getSeen } from "../lib/data";
 import prisma from "../lib/prisma";
-import { getBestVideos } from "../lib/weighting";
 
 export default function Home({ initialVideos, watched }) {
   const { data: session, status } = useSession();
@@ -17,6 +16,7 @@ export default function Home({ initialVideos, watched }) {
   const [videos, setVideos] = useState(initialVideos);
   const [reachedEnd, setReachedEnd] = useState(initialVideos.length < amount);
 
+  console.log("initial videos", initialVideos);
   const loading = status === "loading";
 
   if (loading) {
@@ -62,7 +62,7 @@ export default function Home({ initialVideos, watched }) {
 export async function getServerSideProps(context) {
   const session = await getSession(context);
 
-  let videos = await getBestVideos({}, prisma);
+  let videos = await getBestVideos(0, amount, prisma);
   videos = JSON.parse(JSON.stringify(videos));
 
   const watched = await getSeen(session?.user.id, prisma);

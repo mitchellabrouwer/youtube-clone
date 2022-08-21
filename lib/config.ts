@@ -1,1 +1,1 @@
-export const amount = 3;
+export const amount = 5;

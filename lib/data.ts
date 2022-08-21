@@ -119,3 +119,27 @@ export const getComments = async (videoId, prisma) => {
   });
   return comments;
 };
+
+export const getBestVideos = async (skip, take, prisma) => {
+  const videos = await prisma.video.findMany({
+    orderBy: [
+      {
+        comments: {
+          _count: "desc",
+        },
+      },
+      {
+        votes: {
+          _count: "desc",
+        },
+      },
+      { views: "desc" },
+    ],
+    include: { votes: true, comments: true, author: true },
+    skip,
+    take,
+  });
+
+  console.log(videos);
+  return videos;
+};

@@ -6,6 +6,7 @@ export default function LoadMore({
   setReachedEnd,
   author,
   subscriptions,
+  trending,
 }) {
   return (
     <div className="flex justify-center">
@@ -22,6 +23,11 @@ export default function LoadMore({
           if (subscriptions) {
             url += `&subscriptions=${subscriptions}`;
           }
+
+          if (trending) {
+            url += `&trending=${!!trending}`;
+          }
+
           const res = await fetch(url);
           const data = await res.json();
           if (data.length < amount) {

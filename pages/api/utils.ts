@@ -54,6 +54,10 @@ export default async function handler(req, res) {
           title: faker.lorem.words(),
           thumbnail: thumbnailURL,
           url: videoURL,
+          views: faker.datatype.number({
+            min: 5,
+            max: 100000,
+          }),
           length: faker.datatype.number(1000),
           visibility: "public",
           author: { connect: { id: await getRandomUserId() } },
