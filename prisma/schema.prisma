@@ -75,7 +75,7 @@ model Video {
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
 
-  thumbnail  String
+  thumbnail  String    @default("public")
   views      Int       @default(0)
   length     Int       @default(0)
   visibility String

@@ -3,7 +3,8 @@ import { getBestVideos, getVideos } from "../../lib/data";
 import prisma from "../../lib/prisma";
 
 export default async function handler(req, res) {
-  if (req.method !== "GET") {
+  console.log("here");
+  if (req.method !== "GET" && req.method !== "POST") {
     return res.status(501).end();
   }
 
@@ -20,6 +21,20 @@ export default async function handler(req, res) {
     }
 
     return res.json(videos);
+  }
+
+  if (req.method === "POST") {
+    console.log("req.body.visibility", req.body.visibility);
+    if (req.body.visibility && req.body.video) {
+      const update = await prisma.video.update({
+        where: { id: req.body.video },
+        data: { visibility: req.body.visibility },
+      });
+
+      console.log("update", update);
+
+      return res.json(!!update);
+    }
   }
 
   return res.end();

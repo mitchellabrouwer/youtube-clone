@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable consistent-return */
 import { useSession } from "next-auth/react";
@@ -25,6 +26,8 @@ export default function Upload() {
   const [image, setImage] = useState(null);
   const [video, setVideo] = useState(null);
   const [duration, setDuration] = useState(null);
+
+  console.log("video", video);
 
   if (!session || !session.user) {
     return null;
@@ -100,6 +103,7 @@ export default function Upload() {
               className="hidden"
               required
               onChange={async (event) => {
+                console.log("event.target.files", event.target.files);
                 if (event.target.files && event.target.files[0]) {
                   if (event.target.files[0].size > 20971520) {
                     alert("maximim size allowed is 20mb");
@@ -110,10 +114,8 @@ export default function Upload() {
                     event.target.files[0]
                   );
 
-                  if (typeof fileDuration === "string") {
-                    setDuration(parseInt(fileDuration, 10));
-                    setVideo(event.target.files[0]);
-                  }
+                  setDuration(fileDuration);
+                  setVideo(event.target.files[0]);
                 }
               }}
             />
