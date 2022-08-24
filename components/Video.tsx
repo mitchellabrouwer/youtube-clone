@@ -43,11 +43,11 @@ export default function Video({ video, seen, showUnlisted }: VideoProps) {
     return null;
   }
 
-  if (video.visibility === "unlisted" && session.user.id !== video.authorId) {
+  if (video.visibility === "unlisted" && session?.user.id !== video.authorId) {
     return null;
   }
 
-  if (video.visibility === "private" && session.user.id !== video.authorId) {
+  if (video.visibility === "private" && session?.user.id !== video.authorId) {
     return null;
   }
 
@@ -105,7 +105,7 @@ export default function Video({ video, seen, showUnlisted }: VideoProps) {
               </div>
             </div>
           </div>
-          {session.user.id === video.authorId && (
+          {session?.user.id === video.authorId && (
             <button
               id="dropdownDefault"
               data-dropdown-toggle="dropdown"
