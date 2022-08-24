@@ -8,13 +8,18 @@ import timeago from "../lib/timeago";
 type VideoProps = {
   video: any;
   seen?: string[];
+  showUnlisted: boolean;
 };
 
-const visibilityOptions = ["public", "unlisted", "private"];
+const options = {
+  public: "green-700",
+  unlisted: "gray-700",
+  private: "blue-700",
+};
 
-export default function Video({ video, seen }: VideoProps) {
+export default function Video({ video, seen, showUnlisted }: VideoProps) {
   const { data: session } = useSession();
-
+  const colour = options[video.visibility];
   const router = useRouter();
 
   const [showDropdown, setShowDropdown] = useState(false);
@@ -33,6 +38,14 @@ export default function Video({ video, seen }: VideoProps) {
 
     router.reload();
   };
+
+  if (video.visibility === "unlisted" && !showUnlisted) {
+    return null;
+  }
+
+  if (video.visibility === "private" && session.user.id !== video.authorId) {
+    return null;
+  }
 
   return (
     <div className="">
@@ -92,7 +105,7 @@ export default function Video({ video, seen }: VideoProps) {
             <button
               id="dropdownDefault"
               data-dropdown-toggle="dropdown"
-              className="relative inline-flex items-center rounded-lg bg-blue-700 px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+              className={`relative inline-flex items-center rounded-lg bg-${colour} px-4 py-2.5 text-center text-sm font-medium text-white hover:bg-${colour} focus:outline-none`}
               type="button"
               onClick={() => setShowDropdown((prev) => !prev)}
             >
@@ -123,7 +136,7 @@ export default function Video({ video, seen }: VideoProps) {
                   className="py-1 text-sm text-gray-700 dark:text-gray-200"
                   aria-labelledby="dropdownDefault"
                 >
-                  {visibilityOptions
+                  {Object.keys(options)
                     .filter((option) => option !== video.visibility)
                     .map((option) => (
                       <li>

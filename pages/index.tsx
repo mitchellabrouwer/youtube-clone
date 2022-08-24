@@ -52,6 +52,8 @@ export default function Home({ initialVideos, watched }) {
             setVideos={setVideos}
             setReachedEnd={setReachedEnd}
             author={undefined}
+            subscriptions={undefined}
+            trending={undefined}
           />
         )}
       </div>

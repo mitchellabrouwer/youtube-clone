@@ -92,7 +92,7 @@ export default function SingleVideo({ video, videos, comments }) {
             {videos.map((video: any, index: Key) => (
               // eslint-disable-next-line react/no-array-index-key
               <div className="w-full" key={index}>
-                <Video video={video} />
+                <Video video={video} showUnlisted />
               </div>
             ))}
           </div>

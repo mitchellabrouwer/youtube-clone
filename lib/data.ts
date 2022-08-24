@@ -122,6 +122,9 @@ export const getComments = async (videoId, prisma) => {
 
 export const getBestVideos = async (skip, take, prisma) => {
   const videos = await prisma.video.findMany({
+    where: {
+      visibility: "public",
+    },
     orderBy: [
       {
         comments: {
