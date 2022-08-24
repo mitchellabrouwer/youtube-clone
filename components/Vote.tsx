@@ -14,7 +14,7 @@ export default function Vote({ videoId }) {
       const raw = await fetch(`/api/vote?video=${videoId}`);
       const data = await raw.json();
 
-      setIsLiked(data.vote);
+      setIsLiked(data.vote.up);
       setUpvotes(data.upvotes);
       setDownvotes(data.downvotes);
     };
@@ -22,7 +22,6 @@ export default function Vote({ videoId }) {
   }, [videoId]);
 
   async function voteHandler(upvote) {
-    setIsLiked(upvote);
     await fetch("/api/vote", {
       body: JSON.stringify({
         video: videoId,
@@ -34,6 +33,12 @@ export default function Vote({ videoId }) {
       },
       method: "POST",
     });
+
+    const raw = await fetch(`/api/vote?video=${videoId}`);
+    const data = await raw.json();
+    setIsLiked(data.vote.up);
+    setUpvotes(data.upvotes);
+    setDownvotes(data.downvotes);
   }
 
   return (
@@ -44,7 +49,7 @@ export default function Vote({ videoId }) {
         onClick={() => voteHandler(true)}
         disabled={!session?.user}
       >
-        <FiThumbsUp fill={isLiked ? "#FFF" : "#000"} />
+        <FiThumbsUp fill={isLiked === true ? "#FFF" : "#000"} />
         <span className="p-1">{upvotes}</span>
       </button>
       <button
