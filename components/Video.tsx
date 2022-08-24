@@ -43,6 +43,10 @@ export default function Video({ video, seen, showUnlisted }: VideoProps) {
     return null;
   }
 
+  if (video.visibility === "unlisted" && session.user.id !== video.authorId) {
+    return null;
+  }
+
   if (video.visibility === "private" && session.user.id !== video.authorId) {
     return null;
   }

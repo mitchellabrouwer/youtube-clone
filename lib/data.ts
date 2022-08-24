@@ -50,6 +50,7 @@ export const getUser = async (username, prisma) => {
     where: { username },
   });
 
+  console.log("user", user);
   return user;
 };
 
@@ -59,7 +60,7 @@ export const getSubscribersCount = async (username, prisma) => {
     include: { subscribers: true },
   });
 
-  return user.subscribers.length;
+  return user?.subscribers.length;
 };
 
 export const isSubscribed = async (username, isSubscribedTo, prisma) => {
@@ -74,7 +75,7 @@ export const isSubscribed = async (username, isSubscribedTo, prisma) => {
     },
   });
 
-  return user.subscribedTo?.length !== 0;
+  return user?.subscribedTo?.length !== 0;
 };
 
 export const getSubscribedTo = async (userId, prisma) => {

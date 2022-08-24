@@ -93,18 +93,19 @@ export async function getServerSideProps(context) {
   let user = await getUser(context.params.username, prisma);
   user = JSON.parse(JSON.stringify(user));
 
-  let subscribed = null;
-  if (session) {
+  let subscribed = false;
+  let subscribers = [];
+  let videos = [];
+  if (user) {
     subscribed = await isSubscribed(session.user.username, user.id, prisma);
+    subscribed = JSON.parse(JSON.stringify(subscribed));
+
+    videos = await getVideos({ author: user.id }, prisma);
+    videos = JSON.parse(JSON.stringify(videos));
+
+    subscribers = await getSubscribersCount(context.params.username, prisma);
+    subscribers = JSON.parse(JSON.stringify(subscribers));
   }
-
-  let videos = await getVideos({ author: user.id }, prisma);
-  videos = JSON.parse(JSON.stringify(videos));
-
-  const subscribers = await getSubscribersCount(
-    context.params.username,
-    prisma
-  );
 
   return {
     props: {
