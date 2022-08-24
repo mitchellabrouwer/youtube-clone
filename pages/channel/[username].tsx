@@ -71,7 +71,7 @@ export default function Channel({
           </div>
         </div>
         <div>
-          <Videos videos={videos} />
+          <Videos videos={videos} showUnlisted />
 
           {!reachedEnd && (
             <LoadMore
